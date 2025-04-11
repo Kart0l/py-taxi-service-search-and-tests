@@ -74,7 +74,6 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Manufacturer")
 
-        # Тест на пошук за країною
         response = self.client.get(
             reverse("taxi:manufacturer-list"),
             {"search": "Country"}
@@ -97,7 +96,6 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Car")
 
-        # Тест на пошук за виробником
         response = self.client.get(
             reverse("taxi:car-list"),
             {"search": "Manufacturer"}
@@ -113,7 +111,6 @@ class ViewTests(TestCase):
         self.assertNotContains(response, "Test Car")
 
     def test_driver_search(self):
-        # Оновлюємо водія для тестування пошуку за іменем/прізвищем
         self.driver.first_name = "John"
         self.driver.last_name = "Doe"
         self.driver.save()
@@ -125,7 +122,6 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "testdriver")
 
-        # Тест на пошук за ім'ям
         response = self.client.get(
             reverse("taxi:driver-list"),
             {"search": "John"}
@@ -133,7 +129,6 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "testdriver")
 
-        # Тест на пошук за прізвищем
         response = self.client.get(
             reverse("taxi:driver-list"),
             {"search": "Doe"}
@@ -216,8 +211,6 @@ class SearchEdgeCasesTests(TestCase):
         )
 
     def test_empty_search_query(self):
-        """Тест на порожній пошуковий запит"""
-        # Виробники
         response = self.client.get(
             reverse("taxi:manufacturer-list"),
             {"search": ""}
@@ -225,7 +218,6 @@ class SearchEdgeCasesTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Manufacturer")
 
-        # Автомобілі
         response = self.client.get(
             reverse("taxi:car-list"),
             {"search": ""}
@@ -233,7 +225,6 @@ class SearchEdgeCasesTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Car")
 
-        # Водії
         response = self.client.get(
             reverse("taxi:driver-list"),
             {"search": ""}
@@ -242,8 +233,6 @@ class SearchEdgeCasesTests(TestCase):
         self.assertContains(response, "testdriver")
 
     def test_case_insensitive_search(self):
-        """Тест на пошук без врахування регістру"""
-        # Виробники
         response = self.client.get(
             reverse("taxi:manufacturer-list"),
             {"search": "test"}
@@ -251,7 +240,6 @@ class SearchEdgeCasesTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Manufacturer")
 
-        # Автомобілі
         response = self.client.get(
             reverse("taxi:car-list"),
             {"search": "test"}
@@ -259,7 +247,6 @@ class SearchEdgeCasesTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Car")
 
-        # Водії
         response = self.client.get(
             reverse("taxi:driver-list"),
             {"search": "john"}
@@ -269,8 +256,6 @@ class SearchEdgeCasesTests(TestCase):
 
 
 class SearchTests(TestCase):
-    """Окремий клас для тестів пошуку, щоб виділити функціонал пошуку"""
-    
     def setUp(self):
         self.client = Client()
         self.driver = get_user_model().objects.create_user(
@@ -291,8 +276,6 @@ class SearchTests(TestCase):
         )
 
     def test_manufacturer_search(self):
-        """Тест пошуку виробників за назвою та країною"""
-        # Пошук за назвою
         response = self.client.get(
             reverse("taxi:manufacturer-list"),
             {"search": "Test"}
@@ -300,7 +283,6 @@ class SearchTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Manufacturer")
 
-        # Пошук за країною
         response = self.client.get(
             reverse("taxi:manufacturer-list"),
             {"search": "Country"}
@@ -308,7 +290,6 @@ class SearchTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Manufacturer")
 
-        # Пошук неіснуючого значення
         response = self.client.get(
             reverse("taxi:manufacturer-list"),
             {"search": "NonExistent"}
@@ -317,8 +298,6 @@ class SearchTests(TestCase):
         self.assertNotContains(response, "Test Manufacturer")
 
     def test_car_search(self):
-        """Тест пошуку автомобілів за моделлю та виробником"""
-        # Пошук за моделлю
         response = self.client.get(
             reverse("taxi:car-list"),
             {"search": "Car"}
@@ -326,7 +305,6 @@ class SearchTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Car")
 
-        # Пошук за виробником
         response = self.client.get(
             reverse("taxi:car-list"),
             {"search": "Manufacturer"}
@@ -334,7 +312,6 @@ class SearchTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Test Car")
 
-        # Пошук неіснуючого значення
         response = self.client.get(
             reverse("taxi:car-list"),
             {"search": "NonExistent"}
@@ -343,8 +320,6 @@ class SearchTests(TestCase):
         self.assertNotContains(response, "Test Car")
 
     def test_driver_search(self):
-        """Тест пошуку водіїв за ім'ям користувача, ім'ям та прізвищем"""
-        # Пошук за ім'ям користувача
         response = self.client.get(
             reverse("taxi:driver-list"),
             {"search": "testdriver"}
@@ -352,7 +327,6 @@ class SearchTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "testdriver")
 
-        # Пошук за ім'ям
         response = self.client.get(
             reverse("taxi:driver-list"),
             {"search": "John"}
@@ -360,7 +334,6 @@ class SearchTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "testdriver")
 
-        # Пошук за прізвищем
         response = self.client.get(
             reverse("taxi:driver-list"),
             {"search": "Doe"}
@@ -368,11 +341,9 @@ class SearchTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "testdriver")
 
-        # Використовуємо ще більш специфічний критерій пошуку
         response = self.client.get(
             reverse("taxi:driver-list"),
             {"search": "Z_Z_Z_DEFINITELY_NOT_EXISTS_ANYWHERE"}
         )
         self.assertEqual(response.status_code, 200)
-        # Перевіряємо, що у відповіді є текст з HTML шаблону для порожнього списку
         self.assertContains(response, "There are no drivers in the service.")
