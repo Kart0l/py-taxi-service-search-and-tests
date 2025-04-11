@@ -42,8 +42,8 @@ class ManufacturerListView(LoginRequiredMixin, generic.ListView):
         search_query = self.request.GET.get("search")
         if search_query:
             return queryset.filter(
-                Q(name__icontains=search_query) | 
-                Q(country__icontains=search_query)
+                Q(name__icontains=search_query)
+                | Q(country__icontains=search_query)
             )
         return queryset
 
@@ -75,8 +75,8 @@ class CarListView(LoginRequiredMixin, generic.ListView):
         search_query = self.request.GET.get("search")
         if search_query:
             return queryset.filter(
-                Q(model__icontains=search_query) |
-                Q(manufacturer__name__icontains=search_query)
+                Q(model__icontains=search_query)
+                | Q(manufacturer__name__icontains=search_query)
             )
         return queryset
 
@@ -112,9 +112,9 @@ class DriverListView(LoginRequiredMixin, generic.ListView):
         search_query = self.request.GET.get("search")
         if search_query:
             return queryset.filter(
-                Q(username__icontains=search_query) |
-                Q(first_name__icontains=search_query) |
-                Q(last_name__icontains=search_query)
+                Q(username__icontains=search_query)
+                | Q(first_name__icontains=search_query)
+                | Q(last_name__icontains=search_query)
             )
         return queryset
 
@@ -145,7 +145,7 @@ def toggle_assign_to_car(request, pk):
     driver = Driver.objects.get(id=request.user.id)
     if (
         Car.objects.get(id=pk) in driver.cars.all()
-    ):  # probably could check if car exists
+    ):
         driver.cars.remove(pk)
     else:
         driver.cars.add(pk)
