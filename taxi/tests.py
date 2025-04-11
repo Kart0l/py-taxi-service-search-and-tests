@@ -114,7 +114,7 @@ class ViewTests(TestCase):
         self.driver.first_name = "John"
         self.driver.last_name = "Doe"
         self.driver.save()
-        
+
         response = self.client.get(
             reverse("taxi:driver-list"),
             {"search": "testdriver"}
